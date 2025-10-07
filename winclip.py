@@ -6,16 +6,16 @@ import win32gui
 import time
 import threading
 import ctypes
-from common import convert_math_syntax
+from base_clipboard_listener import BaseClipboardListener
 
 # Windows message constants
 WM_CLIPBOARDUPDATE = 0x031D
 
 
-class WinClipboardListener:
+class WinClipboardListener(BaseClipboardListener):
     def __init__(self):
         """Initialize the clipboard listener"""
-        self.last_processed_content = None  # Save the last processed content to avoid redundant processing
+        super().__init__()
         self.hwnd = None
         self.is_processing = False  # Flag to prevent recursive processing
         self.running = True  # Flag to control the message loop
@@ -57,31 +57,16 @@ class WinClipboardListener:
         if self.is_processing:
             return
         
-        print(f"Original clipboard content: {content[:100]}...")  # Show first 100 chars
-
-        # Use convert_math_syntax to transform the content
-        converted_content = convert_math_syntax(content)
-
-        # If the converted content is the same as the current content, skip writing back to avoid loops
-        if converted_content == content:
-            print("Converted content is the same as the original content, skipping write-back")
-            self.last_processed_content = content
-            return
-
-        print(f"Converted clipboard content: {converted_content[:100]}...")  # Show first 100 chars
-
-        # Save the processed content
-        self.last_processed_content = converted_content
-
         # Set flag to prevent recursive processing
         self.is_processing = True
         
-        # Write the converted content back to the clipboard
-        self.set_clipboard_text(converted_content)
-        
-        # Reset flag after a short delay
-        time.sleep(0.1)
-        self.is_processing = False
+        try:
+            # Call the base class implementation
+            super().on_clipboard_change(content)
+        finally:
+            # Reset flag after a short delay
+            time.sleep(0.1)
+            self.is_processing = False
 
     def wnd_proc(self, hwnd, msg, wparam, lparam):
         """Window procedure to handle messages"""

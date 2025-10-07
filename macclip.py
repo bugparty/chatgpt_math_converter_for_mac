@@ -7,6 +7,11 @@ from common import convert_math_syntax
 
 
 class MacClipboardListener(NSObject):
+    """
+    macOS clipboard listener implementation.
+    Note: Must inherit from NSObject for Objective-C compatibility,
+    so we implement the base listener interface rather than inherit from it.
+    """
     def init(self):
         """Override the init method and initialize using objc.super"""
         self = objc.super(MacClipboardListener, self).init()
@@ -46,24 +51,42 @@ class MacClipboardListener(NSObject):
 
     def on_clipboard_change(self, content):
         """Process the changed clipboard content"""
-        NSLog(f"Original clipboard content: {content}")
-
         # Use convert_math_syntax to transform the content
         converted_content = convert_math_syntax(content)
 
         # If the converted content is the same as the current content, skip writing back to avoid loops
         if converted_content == content:
             NSLog("Converted content is the same as the original content, skipping write-back")
+            self.last_processed_content = content
             return
 
-        NSLog(f"Converted clipboard content: {converted_content}")
+        NSLog(f"Original clipboard content: {content[:100]}...")
+        NSLog(f"Converted clipboard content: {converted_content[:100]}...")
 
         # Save the processed content
         self.last_processed_content = converted_content
 
-        # Write the converted content back to the clipboard
+        # Write the converted content back to the clipboard (set_clipboard_text equivalent)
         self.pasteboard.declareTypes_owner_([NSPasteboardTypeString], None)
         self.pasteboard.setString_forType_(converted_content, NSPasteboardTypeString)
+    
+    def get_clipboard_text(self):
+        """Get text content from clipboard"""
+        if not self.pasteboard:
+            return None
+        try:
+            return self.pasteboard.stringForType_("public.utf8-plain-text")
+        except Exception as e:
+            NSLog(f"Error getting clipboard content: {e}")
+            return None
+    
+    def set_clipboard_text(self, text):
+        """Set text content to clipboard"""
+        try:
+            self.pasteboard.declareTypes_owner_([NSPasteboardTypeString], None)
+            self.pasteboard.setString_forType_(text, NSPasteboardTypeString)
+        except Exception as e:
+            NSLog(f"Error setting clipboard content: {e}")
 
     def start(self):
         """Start listening to clipboard changes"""
