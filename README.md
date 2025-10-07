@@ -1,42 +1,74 @@
-# ChatGPT Math Notation Converter for Mac
+# ChatGPT Math Notation Converter
 
-A lightweight macOS utility that automatically converts ChatGPT's LaTeX-style math notation to standard Markdown math syntax in your clipboard.
+A lightweight cross-platform utility that automatically converts ChatGPT's LaTeX-style math notation to standard Markdown math syntax in your clipboard.
 
 ## Features
 
+- **Cross-platform support**: Works on both Windows and macOS
 - Runs silently in the background monitoring your clipboard
 - Automatically converts math notation when you copy text from ChatGPT
 - Converts `\[...\]` to `$$...$$` for block equations
 - Converts `\(...\)` to `$...$` for inline equations
-- Zero configuration needed
+- Converts `[...]` to `$$...$$` for block equations
+- Removes extra spaces in inline math: `$ xxx $` → `$xxx$`
+- Zero configuration needed - automatically detects your platform
 
 ## Prerequisites
 
-- macOS
 - Python 3.x
-- pyobjc package
+- **For macOS**: `pyobjc` package
+- **For Windows**: `pywin32` package
 
 ## Installation
 
-1. Install the required dependency:
+1. Install the required dependency for your platform:
+    
+    **macOS:**
     ```sh
     pip install pyobjc
+    ```
+    
+    **Windows:**
+    ```sh
+    pip install pywin32
     ```
 
 ## Usage
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/gptcliphelper.git
-    cd gptcliphelper
+    git clone https://github.com/bugparty/chatgpt_math_converter_for_mac.git
+    cd chatgpt_math_converter_for_mac
     ```
 
-2. Run the script:
+2. Run the main script (works on both platforms):
+    ```sh
+    python main.py
+    ```
+    
+    Or run the platform-specific script directly:
+    
+    **macOS:**
     ```sh
     python macclip.py
     ```
+    
+    **Windows:**
+    ```sh
+    python winclip.py
+    ```
 
 3. The utility will start running in the background, monitoring your clipboard for any copied text from ChatGPT and converting the math notation automatically.
+
+4. Press `Ctrl+C` to stop the listener.
+
+## Project Structure
+
+- `main.py` - Cross-platform entry point (recommended)
+- `clipboard_factory.py` - Factory pattern for creating platform-specific listeners
+- `common.py` - Shared math conversion logic
+- `macclip.py` - macOS-specific clipboard listener implementation
+- `winclip.py` - Windows-specific clipboard listener implementation
 
 ## Contributing
 

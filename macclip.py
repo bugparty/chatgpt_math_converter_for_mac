@@ -3,24 +3,13 @@ from AppKit import NSPasteboard, NSApplication, NSPasteboardTypeString
 from Foundation import NSObject, NSLog
 import objc
 import time
-import re
-
-# conver chatgpt math syntax to common markdown
-def convert_math_syntax(input_text):
-    # turn  \[...\] into $$...$$ format
-    output_text = re.sub(r'\\\[(.*?)\\\]', r'$$\1$$', input_text, flags=re.DOTALL)
-    # turn  \(...\) into $...$ format
-    output_text = re.sub(r'\\\((.*?)\\\)', r'$\1$', output_text, flags=re.DOTALL)
-    # turn $ xxx $ into $xxx$ format
-    output_text = re.sub(r'\$\s*(.*?)\s*\$', r'$\1$', output_text, flags=re.DOTALL)
-    
-    return output_text
+from common import convert_math_syntax
 
 
-class ClipboardListener(NSObject):
+class MacClipboardListener(NSObject):
     def init(self):
         """Override the init method and initialize using objc.super"""
-        self = objc.super(ClipboardListener, self).init()
+        self = objc.super(MacClipboardListener, self).init()
         if self is None:
             return None
 
@@ -76,21 +65,27 @@ class ClipboardListener(NSObject):
         self.pasteboard.declareTypes_owner_([NSPasteboardTypeString], None)
         self.pasteboard.setString_forType_(converted_content, NSPasteboardTypeString)
 
+    def start(self):
+        """Start listening to clipboard changes"""
+        print("Listening for clipboard content changes...")
+        print("Press Ctrl+C to stop")
+        
+        try:
+            while True:
+                self.check_clipboard()  # Check for clipboard content changes
+                time.sleep(0.5)  # Check every 0.5 seconds
+        except KeyboardInterrupt:
+            print("\nStopped listening")
+            NSApplication.sharedApplication().terminate_(None)
+
 
 def main():
-    listener = ClipboardListener.alloc().init()   # Create an instance using alloc().init()
+    listener = MacClipboardListener.alloc().init()   # Create an instance using alloc().init()
     if listener is None:
         print("Failed to initialize clipboard listener")
         return
 
-    print("Listening for clipboard content changes...")
-    try:
-        while True:
-            listener.check_clipboard()  # Check for clipboard content changes
-            time.sleep(0.5)  # Check every 0.5 seconds
-    except KeyboardInterrupt:
-        print("Stopped listening")
-        NSApplication.sharedApplication().terminate_(None)
+    listener.start()
 
 
 if __name__ == "__main__":
