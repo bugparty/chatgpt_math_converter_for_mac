@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from common import convert_math_syntax
+from .common import convert_math_syntax
 
 
 class BaseClipboardListener(ABC):

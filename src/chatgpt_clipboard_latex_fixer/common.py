@@ -1,6 +1,6 @@
 import os
 import re
-from math_parser import markdown_normalize
+from .math_parser import markdown_normalize
 
 
 # Legacy regex-based converter (kept for reference)

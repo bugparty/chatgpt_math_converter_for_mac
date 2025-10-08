@@ -82,26 +82,27 @@ class BlockMath(BlockElement):
 # ========== Inline Element Example ==========
 # Define custom inline math element
 class InlineMath(InlineElement):
-    """Inline math element (wrapped in $ ... $)"""
-    pattern = r'\$([^\$\n]+?)\$'  # Match $...$ format math, no cross-line
+    """Inline math element (wrapped in $ ... $ or \( ... \))"""
+    pattern = r'(?:\\\((.+?)\\\)|\$\s*([^\$\n]+?)\s*\$)'  # Match \(...\) or $...$ format math, no cross-line. Non-greedy ? ensures stopping at first \)
     parse_children = False  # Don't parse math content as markdown
     priority = 7  # Set priority
 
     def __init__(self, match):
-        # Extract math content
-        self.math_content = match.group(1)
+        # Extract math content from either group 1 (\(...\)) or group 2 ($...$)
+        self.math_content = match.group(1) if match.group(1) else match.group(2)
         # IMPORTANT: Don't call super().__init__() because when parse_children=False,
         # it would set self.children to the matched string, causing renderer errors
         # We leave children undefined - renderer will use our custom render method
         
 class InlineBlockMath(InlineElement):
-    pattern = r'\[(\n[^\[\]\n]+?\n)\]'  # Match [ ... ] format math, no cross-line
+    # Inline block math element (wrapped in [ ... ] or \[ ... \])
+    pattern = r'(?:\\\[(\n[^\[\]\n]+?\n)\\\]|\[(\n[^\[\]\n]+?\n)\])'  # Match [ ... ] or \[ ... \] format math
     parse_children = False  # Don't parse math content as markdown
     priority = 8  # Set priority
 
     def __init__(self, match):
-        # Extract math content
-        self.math_content = match.group(1)
+        # Extract math content from either group 1 (\[...\]) or group 2 ([...])
+        self.math_content = match.group(1) if match.group(1) else match.group(2)
         # IMPORTANT: Don't call super().__init__() because when parse_children=False,
         # it would set self.children to the matched string, causing renderer errors
         # We leave children undefined - renderer will use our custom render method

@@ -14,10 +14,10 @@ def create_clipboard_listener():
     system = platform.system()
     
     if system == "Windows":
-        from winclip import WinClipboardListener
+        from .winclip import WinClipboardListener
         return WinClipboardListener()
     elif system == "Darwin":  # macOS
-        from macclip import MacClipboardListener
+        from .macclip import MacClipboardListener
         return MacClipboardListener.alloc().init()
     else:
         raise NotImplementedError(f"Platform '{system}' is not supported. Only Windows and macOS are supported.")

@@ -3,7 +3,7 @@ from AppKit import NSPasteboard, NSApplication, NSPasteboardTypeString
 from Foundation import NSObject, NSLog
 import objc
 import time
-from common import convert_math_syntax
+from .common import convert_math_syntax
 
 
 class MacClipboardListener(NSObject):

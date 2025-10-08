@@ -31,11 +31,12 @@ classifiers = [
 
 dependencies = [
     "marko>=2.0.0",
+    "pywin32>=306; sys_platform == 'win32'",
+    "pyobjc>=10.0; sys_platform == 'darwin'",
 ]
 
 [project.optional-dependencies]
-windows = ["pywin32>=306"]
-macos = ["pyobjc>=10.0"]
+dev = ["build", "twine"]
 
 [project.urls]
 Homepage = "https://github.com/bugparty/chatgpt_math_converter_for_mac"

@@ -1,4 +1,4 @@
-from clipboard_factory import create_clipboard_listener
+from .clipboard_factory import create_clipboard_listener
 
 
 def main():

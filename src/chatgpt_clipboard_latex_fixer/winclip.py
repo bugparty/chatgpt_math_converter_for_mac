@@ -6,7 +6,7 @@ import win32gui
 import time
 import threading
 import ctypes
-from base_clipboard_listener import BaseClipboardListener
+from .base_clipboard_listener import BaseClipboardListener
 
 # Windows message constants
 WM_CLIPBOARDUPDATE = 0x031D
