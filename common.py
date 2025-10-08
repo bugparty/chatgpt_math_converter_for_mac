@@ -1,7 +1,6 @@
 import os
 import re
-from marko import Markdown
-from marko_math_parser import MathExtension
+from math_parser import markdown_normalize
 
 
 # Legacy regex-based converter (kept for reference)
@@ -29,13 +28,11 @@ def convert_math_syntax(input_text):
     Convert ChatGPT math syntax to standard MathJax format.
     Uses the improved converter from math_converter_v2.py
     """
-    try:
-        md = Markdown()  # Do not specify renderer here, let extension system handle
-        md.use(MathExtension)  # Use use method to register extension
-        return md.render(input_text)
-    except ImportError:
+    try:        
+        return markdown_normalize(input_text)
+    except Exception as e:
         # Fallback to legacy if new module not available or fails
-        print("Warning: Using legacy regex-based converter (may have ambiguity issues)")
+        print("Warning: Using legacy regex-based converter (may have ambiguity issues)", e)
         return convert_math_syntax_legacy(input_text)
 
 if __name__ == "__main__":

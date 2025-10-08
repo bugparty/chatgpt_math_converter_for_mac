@@ -1,0 +1,28 @@
+## Normalized value restoration formula (normalized)
+
+[
+x = $-1$^{s}\times \big$1.f\big$\times 2^{,E-\text{bias}}
+]
+
+* $s$: sign bit
+* $E$: unsigned value of the exponent field
+* $1.f$: **implied leading 1** (leading 1, not stored), followed by 23 fractional bits
+* bias: single=127, double=1023
+## Illustration from your diagram
+
+* The yellow highlighted part like
+  [
+  2^{-3}\times 1.001001\ldots
+  ]
+  is to separate the **exponent** ($2^{-3}$) and the **significand**: **1.(implied 1) + fraction**.
+* "hopefully ≤ 23 bits" means: after normalization, we hope the significand fits in **23 bits**; if not, it needs to be **rounded**.
+
+---
+
+## A quick decoding example (float32)
+
+Let the bit string be:
+`s = 0`, `E = 1000 0001$=129$`, `fraction = 0100…0$=0.25$`
+[
+x = $+1$\times $1+0.25$\times 2^{129-127} = 1.25\times 2^{2} = 5
+]

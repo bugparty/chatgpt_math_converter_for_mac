@@ -2,7 +2,7 @@ from marko import Markdown
 from marko.inline import InlineElement
 from marko.block import BlockElement
 from marko.md_renderer import MarkdownRenderer
-
+from marko.helpers import MarkoExtension
 import re
 
 
@@ -84,18 +84,27 @@ class BlockMath(BlockElement):
 class InlineMath(InlineElement):
     """Inline math element (wrapped in $ ... $)"""
     pattern = r'\$([^\$\n]+?)\$'  # Match $...$ format math, no cross-line
-    parse_children = False  # Do not parse internal content
+    parse_children = False  # Don't parse math content as markdown
     priority = 7  # Set priority
 
     def __init__(self, match):
-        self.math_content = match.group(1)  # Extract math content between $
+        # Extract math content
+        self.math_content = match.group(1)
+        # IMPORTANT: Don't call super().__init__() because when parse_children=False,
+        # it would set self.children to the matched string, causing renderer errors
+        # We leave children undefined - renderer will use our custom render method
+        
 class InlineBlockMath(InlineElement):
     pattern = r'\[(\n[^\[\]\n]+?\n)\]'  # Match [ ... ] format math, no cross-line
-    parse_children = False  # Do not parse internal content
+    parse_children = False  # Don't parse math content as markdown
     priority = 8  # Set priority
 
     def __init__(self, match):
-        self.math_content = match.group(1)  # Extract math content between [
+        # Extract math content
+        self.math_content = match.group(1)
+        # IMPORTANT: Don't call super().__init__() because when parse_children=False,
+        # it would set self.children to the matched string, causing renderer errors
+        # We leave children undefined - renderer will use our custom render method
 
 
 # ========== Renderer Implementation ==========
@@ -131,14 +140,19 @@ class MathMarkdownRenderer(MarkdownRenderer):
         """
         return f"$$\n{element.math_content}\n$$"
 
-# Create an extension class
-class MathExtension:
-    """Math extension - supports both block and inline"""
-    elements = [BlockMath, InlineMath, InlineBlockMath]  # List of elements to add
-    parser_mixins = []  # Parser mixins
-    renderer_mixins = [MathMarkdownRenderer]  # Renderer mixins
 
+MathExtension = MarkoExtension(
+    elements = [BlockMath, InlineMath, InlineBlockMath],
+    renderer_mixins = [MathMarkdownRenderer]
+)
 
+def markdown_normalize(text: str) -> str:
+    """Normalize markdown text by stripping trailing spaces and ensuring ending newline."""
+    md = Markdown()  # Do not specify renderer here, let extension system handle
+    md.use(MathExtension)
+    doc = md.parse(text)
+    normalized = md.render(doc)
+    return normalized
 if __name__ == "__main__":
     print("=" * 80)
     # Create custom Markdown instance and register extension
@@ -146,7 +160,7 @@ if __name__ == "__main__":
     md.use(MathExtension)  # Use use method to register extension
 
     # Test parsing
-    with open("testcases/001.txt", "r", encoding="utf-8") as f:
+    with open("testcases/002.txt", "r", encoding="utf-8") as f:
         text = f.read()
         doc = md.parse(text)
         print("=== Document Structure ===")
