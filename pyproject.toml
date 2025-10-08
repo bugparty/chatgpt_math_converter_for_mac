@@ -1,0 +1,56 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "chatgpt-clipboard-latex-fixer"
+version = "0.1.0"
+description = "A cross-platform utility that automatically converts ChatGPT's LaTeX-style math notation to standard Markdown math syntax in your clipboard"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+authors = [
+    {name = "bugparty", email = "your-email@example.com"}
+]
+keywords = ["chatgpt", "latex", "math", "markdown", "clipboard", "converter", "fixer"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Text Processing :: Markup",
+    "Topic :: Utilities",
+]
+
+dependencies = [
+    "marko>=2.0.0",
+]
+
+[project.optional-dependencies]
+windows = ["pywin32>=306"]
+macos = ["pyobjc>=10.0"]
+
+[project.urls]
+Homepage = "https://github.com/bugparty/chatgpt_math_converter_for_mac"
+Repository = "https://github.com/bugparty/chatgpt_math_converter_for_mac"
+Issues = "https://github.com/bugparty/chatgpt_math_converter_for_mac/issues"
+
+[project.scripts]
+chatgpt-clipboard-latex-fixer = "chatgpt_clipboard_latex_fixer.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/chatgpt_clipboard_latex_fixer"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/README.md",
+    "/LICENSE",
+]

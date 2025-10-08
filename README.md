@@ -1,4 +1,4 @@
-# ChatGPT Math Notation Converter
+# ChatGPT Clipboard LaTeX Fixer
 
 A lightweight cross-platform utility that automatically converts ChatGPT's LaTeX-style math notation to standard Markdown math syntax in your clipboard.
 
@@ -13,27 +13,53 @@ A lightweight cross-platform utility that automatically converts ChatGPT's LaTeX
 - Removes extra spaces in inline math: `$ xxx $` → `$xxx$`
 - Zero configuration needed - automatically detects your platform
 
-## Prerequisites
-
-- Python 3.x
-- **For macOS**: `pyobjc` package
-- **For Windows**: `pywin32` package
-
 ## Installation
 
-1. Install the required dependency for your platform:
-    
-    **macOS:**
+### From PyPI (Recommended)
+
+```bash
+pip install chatgpt-clipboard-latex-fixer
+```
+
+**Platform-specific dependencies:**
+
+**Windows:**
+```bash
+pip install chatgpt-clipboard-latex-fixer pywin32
+```
+
+**macOS:**
+```bash
+pip install chatgpt-clipboard-latex-fixer pyobjc
+```
+
+### From Source
+
+1. Clone the repository:
     ```sh
-    pip install pyobjc
+    git clone https://github.com/bugparty/chatgpt_math_converter_for_mac.git
+    cd chatgpt_math_converter_for_mac
     ```
-    
-    **Windows:**
+
+2. Install dependencies:
     ```sh
-    pip install pywin32
+    pip install -r requirements.txt
     ```
 
 ## Usage
+
+### Command Line (After pip install)
+
+Simply run:
+```sh
+chatgpt-clipboard-latex-fixer
+```
+
+The utility will start running in the background, monitoring your clipboard for any copied text from ChatGPT and converting the math notation automatically.
+
+Press `Ctrl+C` to stop the listener.
+
+### From Source
 
 1. Clone the repository:
     ```sh
