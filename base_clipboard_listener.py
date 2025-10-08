@@ -56,8 +56,8 @@ class BaseClipboardListener(ABC):
             self.last_processed_content = content
             return
 
-        print(f"Original clipboard content: {content[:100]}...")  # Show first 100 chars
-        print(f"Converted clipboard content: {converted_content[:100]}...")  # Show first 100 chars
+        print(f"Original clipboard content: {content}...")  # Show first 300 chars
+        print(f"Converted clipboard content: {converted_content}...")  # Show first 300 chars
 
         # Save the processed content
         self.last_processed_content = converted_content

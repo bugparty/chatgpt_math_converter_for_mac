@@ -1,0 +1,6 @@
+# Core dependency for Markdown parsing (replaces regex-based approach)
+marko>=2.0.0
+
+# Platform-specific dependencies
+pywin32>=306; sys_platform == 'win32'
+pyobjc>=10.0; sys_platform == 'darwin'
